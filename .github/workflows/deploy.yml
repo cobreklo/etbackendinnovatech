@@ -1,0 +1,59 @@
+name: Deploy Backend to ECS
+
+on:
+  push:
+    branches:
+      - deploy
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 674415805593.dkr.ecr.us-east-1.amazonaws.com
+  CLUSTER_NAME: cluster-innovatech
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | \
+          docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: Build and push Despachos image
+        run: |
+          docker build -t $ECR_REGISTRY/back-despachos:latest \
+            ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
+          docker push $ECR_REGISTRY/back-despachos:latest
+
+      - name: Build and push Ventas image
+        run: |
+          docker build -t $ECR_REGISTRY/back-ventas:latest \
+            ./back-Ventas_SpringBoot/Springboot-API-REST
+          docker push $ECR_REGISTRY/back-ventas:latest
+
+      - name: Force new deployment - Despachos
+        run: |
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service svc-despachos \
+            --force-new-deployment \
+            --region $AWS_REGION
+
+      - name: Force new deployment - Ventas
+        run: |
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service svc-ventas \
+            --force-new-deployment \
+            --region $AWS_REGION
