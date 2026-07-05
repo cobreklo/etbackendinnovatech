@@ -2,7 +2,7 @@
 
 ## Descripción General
 
-Este repositorio contiene el código fuente y la configuración de contenedorización del **Backend** del sistema Innovatech Chile (Grupo Cordillera). Incluye dos microservicios REST desarrollados en **Spring Boot (Java 17)**: la API de Despachos y la API de Ventas. Ambos servicios se despliegan automáticamente en una instancia EC2 privada en AWS mediante un pipeline CI/CD con GitHub Actions y Amazon ECR, con persistencia de datos garantizada por volúmenes Docker.
+Este repositorio contiene el código fuente y la configuración de contenedorización del **Backend** del sistema Innovatech Chile (Grupo Cordillera). Incluye dos microservicios REST desarrollados en **Spring Boot (Java 17)**: la API de Despachos y la API de Ventas. Ambos servicios se despliegan automáticamente en AWS ECS Fargate mediante un pipeline CI/CD con GitHub Actions y Amazon ECR.
 
 ---
 
@@ -192,4 +192,4 @@ innovatech-backend/
 
 **Grupo Cordillera — Innovatech Chile**  
 Asignatura: ISY1101 — Introducción a Herramientas DevOps  
-Evaluación Parcial N°2 | 2026
+Examen Final Transversal EFT | 2026
